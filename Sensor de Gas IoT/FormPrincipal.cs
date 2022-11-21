@@ -15,12 +15,13 @@ using Twilio.Rest.Api.V2010.Account;
 namespace Sensor_de_Gas_IoT {
     public partial class FormPrincipal : Form {
 
-        private SerialPort serialMQ2 = default;
+        private SerialPort serialArduino = default;
         private readonly string resources = Path.Combine(Path.GetFullPath(@"..\..\"), "Resources");
         private SoundPlayer player = default;
         private bool alarmaLocalSonando = false;
         private string arduinoData;
-        float valorMQ2 = 0.0f;
+        float valorMQ3 = 0.0f, valorMQ2 = 0.0f;
+
 
         public FormPrincipal() {
             InitializeComponent();
@@ -32,33 +33,133 @@ namespace Sensor_de_Gas_IoT {
             //Get settings from App.Config file
             string portName = Properties.Settings.Default.PortName;
             int baudRate = Properties.Settings.Default.BaudRate;
-            serialMQ2 = new SerialPort {
+            serialArduino = new SerialPort {
                 BaudRate = baudRate,
                 PortName = portName
             };
-            serialMQ2.DataReceived += SerialMQ2_DataReceived;
+            serialArduino.DataReceived += SerialMQ2_DataReceived;
             player = new SoundPlayer { SoundLocation = $"{resources}\\Alarma.wav" };
 
 
             //Open the port
             try {
-                serialMQ2.Open();
+                serialArduino.Open();
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            Thread hiloMQ2 = new Thread(LlenarGraficaSensorMQ2);
-            hiloMQ2.Start();
-            
+            chartSensorMQ3.ChartAreas[0].AxisX.Title = "Fecha";
+            chartSensorMQ3.ChartAreas[0].AxisY.Title = "PPM";
+
+            chartSensorMQ2.ChartAreas[0].AxisX.Title = "Fecha";
+            chartSensorMQ2.ChartAreas[0].AxisY.Title = "PPM";
+
         }
 
         private void SerialMQ2_DataReceived(object sender, SerialDataReceivedEventArgs e) {
-            arduinoData = serialMQ2.ReadLine();
-            Invoke(new EventHandler(ProcesarDatos));
+            arduinoData = serialArduino.ReadLine();
+
+            if (arduinoData.Contains("MQ2")) {
+                Invoke(new EventHandler(ProcesarDatosMQ2));
+            } else if (arduinoData.Contains("MQ3")) {
+                Invoke(new EventHandler(ProcesarDatosMQ3));
+            }
+
         }
 
-        private void ProcesarDatos(object sender, EventArgs e) {
+        private void DetenerAlarmaEnMQ3() {
+            if (alarmaLocalSonando) {
+                player.Stop();
+                alarmaLocalSonando = false;
+            }
+        }
+
+        private void ProcesarDatosMQ3(object sender, EventArgs e) {
             logMq3.AppendText(arduinoData);
+            try {
+                //Check if arduinoData is a float: if true, compare its value to 300
+                string[] data = arduinoData.Split(':');
+
+                if (float.TryParse(data[1], out valorMQ3)) {
+                    if (valorMQ3 > 300) {
+                        if (!alarmaLocalSonando) {
+                            alarmaLocalSonando = true;
+                        }
+                        alcohol.Image = Image.FromFile($"{resources}\\HumoHigh.png");
+                    } else if (valorMQ3 > 100 && valorMQ3 <= 300) {
+                        DetenerAlarmaEnMQ3();
+                        alcohol.Image = Image.FromFile($"{resources}\\HumoMedium.png");
+                        Console.Beep();
+                        Console.Beep();
+                    } else {
+                        DetenerAlarmaEnMQ3();
+                        alcohol.Image = Image.FromFile($"{resources}\\HumoLow.png");
+                        Console.Beep();
+                    }
+                } else {
+                    if (alarmaLocalSonando) {
+                        player.Stop();
+                        alarmaLocalSonando = false;
+                    }
+                    alcohol.Image = Image.FromFile($"{resources}\\Okay.png");
+                }
+
+                try {
+                    if (serialArduino.IsOpen) {
+                        chartSensorMQ3.Invoke((MethodInvoker)(() => {
+                            chartSensorMQ3.Series["MQ3"].Points.AddXY(DateTime.Now.ToLongTimeString(), valorMQ3);
+                        }));
+                    }
+                } catch (Exception ex) {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
+            } catch {
+                Console.WriteLine("[IGNORE]: Error de lectura del arduino");
+            }
+        }
+
+        private void ProcesarDatosMQ2(object sender, EventArgs e) {
+            logMq2.AppendText(arduinoData);
+            //Check if arduinoData is a float: if true, compare its value to 300
+            try {
+                string[] data = arduinoData.Split(':');
+                if (float.TryParse(data[1], out valorMQ2)) {
+                    if (valorMQ2 > 300) {
+                        if (!alarmaLocalSonando) {
+                            alarmaLocalSonando = true;
+                        }
+                        humo.Image = Image.FromFile($"{resources}\\HumoHigh.png");
+                    } else if (valorMQ2 > 100 && valorMQ2 <= 300) {
+                        DetenerAlarmaEnMQ3();
+                        humo.Image = Image.FromFile($"{resources}\\HumoMedium.png");
+                        Console.Beep();
+                        Console.Beep();
+                    } else {
+                        DetenerAlarmaEnMQ3();
+                        humo.Image = Image.FromFile($"{resources}\\HumoLow.png");
+                        Console.Beep();
+                    }
+                } else {
+                    if (alarmaLocalSonando) {
+                        player.Stop();
+                        alarmaLocalSonando = false;
+                    }
+                    humo.Image = Image.FromFile($"{resources}\\Okay.png");
+                }
+
+                try {
+                    if (serialArduino.IsOpen) {
+                        chartSensorMQ2.Invoke((MethodInvoker)(() => {
+                            chartSensorMQ2.Series["MQ2"].Points.AddXY(DateTime.Now.ToLongTimeString(), valorMQ2);
+                        }));
+                    }
+                } catch (Exception ex) {
+                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            } catch {
+                Console.Write("[IGNORE]: Error de lectura de arduino");
+            }
         }
 
         private void btnEncenderAlarmaLocalmente_Click(object sender, EventArgs e) {
@@ -70,8 +171,8 @@ namespace Sensor_de_Gas_IoT {
             if (MessageBox.Show("¿Está seguro que desea activar el botón de pánico?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                 SonarAlarma();
                 MessageBox.Show("Se ha llamado a emergencias. Los aspersores serán encendidos. Una notificación fue enviada a su celular.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los aspersores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM.");
-            } 
+                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los aspersores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3}. BOTON DE PÁNICO FUE ACTIVADO.");
+            }
         }
 
         #endregion
@@ -82,37 +183,14 @@ namespace Sensor_de_Gas_IoT {
             if (alarmaLocalSonando) {
                 player.Stop();
                 alarmaLocalSonando = false;
-                btnEncenderAlarmaLocalmente.Text = "Encender Alarma Localmente";
             } else {
-                player.Play();
+                player.PlayLooping();
                 alarmaLocalSonando = true;
-                btnEncenderAlarmaLocalmente.Text += " (SONANDO) ";
             }
         }
 
         #endregion
 
-        #region Llenar graficas de valores
-
-        private void LlenarGraficaSensorMQ2() {
-            /*while (true) {
-                try {
-                    if (serialMQ2.IsOpen) {
-                        string inData = serialMQ2.ReadLine();
-                        int valor = int.Parse(inData);
-                        chartSensorMQ2.Series["PPM"].Points.AddY(valor);
-                        if (chartSensorMQ2.Series["PPM"].Points.Count > 100) {
-                            chartSensorMQ2.Series["PPM"].Points.RemoveAt(0);
-                        }
-                        
-                    }
-                } catch(Exception ex) {
-                    MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }*/
-        }
-
-        #endregion
 
         #region Notificaciones móviles
 
@@ -122,8 +200,8 @@ namespace Sensor_de_Gas_IoT {
             TwilioClient.Init(accountSid, authToken);
             var message = MessageResource.Create(
                 body: mensaje,
-                from: new Twilio.Types.PhoneNumber("+19498284783"),
-                to: new Twilio.Types.PhoneNumber("+528672110473")
+                from: new Twilio.Types.PhoneNumber(Properties.Settings.Default.TwilioPhone),
+                to: new Twilio.Types.PhoneNumber(Properties.Settings.Default.TwilioTo)
             );
             //Check if message was sent
             if (message.Sid != null) {
@@ -133,8 +211,21 @@ namespace Sensor_de_Gas_IoT {
             }
         }
 
+        private void FormPrincipal_FormClosed(object sender, FormClosedEventArgs e) {
+            try {
+                serialArduino.Close();
+            } catch {
+                Console.WriteLine("[IGNORE]: Error al cerrar el puerto serial");
+            }
+        }
+
         private void btnNotificarCelular_Click(object sender, EventArgs e) {
-            EnviarNotificacionCelular("ALERTA: Pulsaron la alarma de notificación. Abra la aplicación para revisar las gráficas o revise sensores. PELIGRO.");
+            //Prompt user if want to send Mq2 and mq3 values via SMS or just sms an alert
+            if (MessageBox.Show("¿Desea enviar un mensaje de alerta o los valores actuales de los sensores?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
+                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los aspersores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3}. Se reporta PELIGRO!");
+            } else {
+                EnviarNotificacionCelular("Se ha activado el botón de pánico. Los aspersores serán encendidos.");
+            }
         }
 
         #endregion

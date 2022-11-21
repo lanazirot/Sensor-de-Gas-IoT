@@ -67,5 +67,14 @@ namespace Sensor_de_Gas_IoT.Properties {
                 return ((string)(this["TwilioPhone"]));
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("+528672110473")]
+        public string TwilioTo {
+            get {
+                return ((string)(this["TwilioTo"]));
+            }
+        }
     }
 }

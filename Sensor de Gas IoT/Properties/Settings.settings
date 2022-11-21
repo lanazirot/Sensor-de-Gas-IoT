@@ -17,5 +17,8 @@
     <Setting Name="TwilioPhone" Type="System.String" Scope="Application">
       <Value Profile="(Default)">+19498284783</Value>
     </Setting>
+    <Setting Name="TwilioTo" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">+528672110473</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

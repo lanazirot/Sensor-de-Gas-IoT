@@ -24,34 +24,38 @@ namespace Sensor_de_Gas_IoT {
         /// the contents of this method with the code editor.
         /// </summary>
         private void InitializeComponent() {
-            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea2 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
-            System.Windows.Forms.DataVisualization.Charting.Legend legend2 = new System.Windows.Forms.DataVisualization.Charting.Legend();
-            System.Windows.Forms.DataVisualization.Charting.Series series2 = new System.Windows.Forms.DataVisualization.Charting.Series();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormPrincipal));
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea5 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend5 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series5 = new System.Windows.Forms.DataVisualization.Charting.Series();
+            System.Windows.Forms.DataVisualization.Charting.ChartArea chartArea6 = new System.Windows.Forms.DataVisualization.Charting.ChartArea();
+            System.Windows.Forms.DataVisualization.Charting.Legend legend6 = new System.Windows.Forms.DataVisualization.Charting.Legend();
+            System.Windows.Forms.DataVisualization.Charting.Series series6 = new System.Windows.Forms.DataVisualization.Charting.Series();
             this.grbGrafico = new System.Windows.Forms.GroupBox();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabMQ2 = new System.Windows.Forms.TabPage();
+            this.humo = new System.Windows.Forms.PictureBox();
             this.logMq2 = new System.Windows.Forms.RichTextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.chartSensorMQ2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.tabMQ3 = new System.Windows.Forms.TabPage();
-            this.estadoMq3 = new System.Windows.Forms.PictureBox();
+            this.chartSensorMQ3 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.alcohol = new System.Windows.Forms.PictureBox();
             this.logMq3 = new System.Windows.Forms.RichTextBox();
             this.lblFugaAlcohol = new System.Windows.Forms.Label();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.btnEnciendeAspersores = new FontAwesome.Sharp.IconButton();
             this.btnNotificarCelular = new FontAwesome.Sharp.IconButton();
-            this.btnEncenderAlarmaLocalmente = new FontAwesome.Sharp.IconButton();
             this.btnPanico = new FontAwesome.Sharp.IconButton();
-            this.humo = new System.Windows.Forms.PictureBox();
             this.grbGrafico.SuspendLayout();
             this.tabControl1.SuspendLayout();
             this.tabMQ2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.humo)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartSensorMQ2)).BeginInit();
             this.tabMQ3.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.estadoMq3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSensorMQ3)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.alcohol)).BeginInit();
             this.groupBox1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.humo)).BeginInit();
             this.SuspendLayout();
             // 
             // grbGrafico
@@ -88,10 +92,21 @@ namespace Sensor_de_Gas_IoT {
             this.tabMQ2.Text = "Sensor MQ2 (Gases)";
             this.tabMQ2.UseVisualStyleBackColor = true;
             // 
+            // humo
+            // 
+            this.humo.Image = ((System.Drawing.Image)(resources.GetObject("humo.Image")));
+            this.humo.Location = new System.Drawing.Point(394, 182);
+            this.humo.Name = "humo";
+            this.humo.Size = new System.Drawing.Size(245, 235);
+            this.humo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.humo.TabIndex = 5;
+            this.humo.TabStop = false;
+            // 
             // logMq2
             // 
             this.logMq2.Location = new System.Drawing.Point(394, 53);
             this.logMq2.Name = "logMq2";
+            this.logMq2.ReadOnly = true;
             this.logMq2.Size = new System.Drawing.Size(246, 123);
             this.logMq2.TabIndex = 4;
             this.logMq2.Text = "";
@@ -108,24 +123,25 @@ namespace Sensor_de_Gas_IoT {
             // 
             // chartSensorMQ2
             // 
-            chartArea2.Name = "ChartArea1";
-            this.chartSensorMQ2.ChartAreas.Add(chartArea2);
-            legend2.Name = "Legend1";
-            this.chartSensorMQ2.Legends.Add(legend2);
+            chartArea5.Name = "ChartArea1";
+            this.chartSensorMQ2.ChartAreas.Add(chartArea5);
+            legend5.Name = "Legend1";
+            this.chartSensorMQ2.Legends.Add(legend5);
             this.chartSensorMQ2.Location = new System.Drawing.Point(6, 53);
             this.chartSensorMQ2.Name = "chartSensorMQ2";
-            series2.ChartArea = "ChartArea1";
-            series2.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
-            series2.Legend = "Legend1";
-            series2.Name = "PPM";
-            this.chartSensorMQ2.Series.Add(series2);
+            series5.ChartArea = "ChartArea1";
+            series5.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series5.Legend = "Legend1";
+            series5.Name = "MQ2";
+            this.chartSensorMQ2.Series.Add(series5);
             this.chartSensorMQ2.Size = new System.Drawing.Size(382, 365);
             this.chartSensorMQ2.TabIndex = 2;
             this.chartSensorMQ2.Text = "Sensor MQ2";
             // 
             // tabMQ3
             // 
-            this.tabMQ3.Controls.Add(this.estadoMq3);
+            this.tabMQ3.Controls.Add(this.chartSensorMQ3);
+            this.tabMQ3.Controls.Add(this.alcohol);
             this.tabMQ3.Controls.Add(this.logMq3);
             this.tabMQ3.Controls.Add(this.lblFugaAlcohol);
             this.tabMQ3.Location = new System.Drawing.Point(4, 22);
@@ -136,22 +152,40 @@ namespace Sensor_de_Gas_IoT {
             this.tabMQ3.Text = "Sensor MQ3 (Alcoholes)";
             this.tabMQ3.UseVisualStyleBackColor = true;
             // 
-            // estadoMq3
+            // chartSensorMQ3
             // 
-            this.estadoMq3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
-            this.estadoMq3.Image = ((System.Drawing.Image)(resources.GetObject("estadoMq3.Image")));
-            this.estadoMq3.Location = new System.Drawing.Point(295, 53);
-            this.estadoMq3.Name = "estadoMq3";
-            this.estadoMq3.Size = new System.Drawing.Size(349, 365);
-            this.estadoMq3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.estadoMq3.TabIndex = 6;
-            this.estadoMq3.TabStop = false;
+            chartArea6.Name = "ChartArea1";
+            this.chartSensorMQ3.ChartAreas.Add(chartArea6);
+            legend6.Name = "Legend1";
+            this.chartSensorMQ3.Legends.Add(legend6);
+            this.chartSensorMQ3.Location = new System.Drawing.Point(6, 53);
+            this.chartSensorMQ3.Name = "chartSensorMQ3";
+            series6.ChartArea = "ChartArea1";
+            series6.ChartType = System.Windows.Forms.DataVisualization.Charting.SeriesChartType.Spline;
+            series6.Legend = "Legend1";
+            series6.Name = "MQ3";
+            this.chartSensorMQ3.Series.Add(series6);
+            this.chartSensorMQ3.Size = new System.Drawing.Size(382, 365);
+            this.chartSensorMQ3.TabIndex = 7;
+            this.chartSensorMQ3.Text = "Sensor MQ2";
+            // 
+            // alcohol
+            // 
+            this.alcohol.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
+            this.alcohol.Image = ((System.Drawing.Image)(resources.GetObject("alcohol.Image")));
+            this.alcohol.Location = new System.Drawing.Point(394, 186);
+            this.alcohol.Name = "alcohol";
+            this.alcohol.Size = new System.Drawing.Size(250, 232);
+            this.alcohol.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.alcohol.TabIndex = 6;
+            this.alcohol.TabStop = false;
             // 
             // logMq3
             // 
-            this.logMq3.Location = new System.Drawing.Point(6, 53);
+            this.logMq3.Location = new System.Drawing.Point(394, 53);
             this.logMq3.Name = "logMq3";
-            this.logMq3.Size = new System.Drawing.Size(283, 365);
+            this.logMq3.ReadOnly = true;
+            this.logMq3.Size = new System.Drawing.Size(250, 127);
             this.logMq3.TabIndex = 5;
             this.logMq3.Text = "";
             // 
@@ -169,7 +203,6 @@ namespace Sensor_de_Gas_IoT {
             // 
             this.groupBox1.Controls.Add(this.btnEnciendeAspersores);
             this.groupBox1.Controls.Add(this.btnNotificarCelular);
-            this.groupBox1.Controls.Add(this.btnEncenderAlarmaLocalmente);
             this.groupBox1.Controls.Add(this.btnPanico);
             this.groupBox1.Location = new System.Drawing.Point(12, 493);
             this.groupBox1.Name = "groupBox1";
@@ -183,7 +216,7 @@ namespace Sensor_de_Gas_IoT {
             this.btnEnciendeAspersores.IconChar = FontAwesome.Sharp.IconChar.Water;
             this.btnEnciendeAspersores.IconColor = System.Drawing.Color.Cyan;
             this.btnEnciendeAspersores.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.btnEnciendeAspersores.Location = new System.Drawing.Point(235, 19);
+            this.btnEnciendeAspersores.Location = new System.Drawing.Point(120, 19);
             this.btnEnciendeAspersores.Name = "btnEnciendeAspersores";
             this.btnEnciendeAspersores.Size = new System.Drawing.Size(115, 114);
             this.btnEnciendeAspersores.TabIndex = 5;
@@ -196,7 +229,7 @@ namespace Sensor_de_Gas_IoT {
             this.btnNotificarCelular.IconChar = FontAwesome.Sharp.IconChar.TabletAndroid;
             this.btnNotificarCelular.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.btnNotificarCelular.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.btnNotificarCelular.Location = new System.Drawing.Point(125, 19);
+            this.btnNotificarCelular.Location = new System.Drawing.Point(10, 19);
             this.btnNotificarCelular.Name = "btnNotificarCelular";
             this.btnNotificarCelular.Size = new System.Drawing.Size(104, 114);
             this.btnNotificarCelular.TabIndex = 4;
@@ -204,20 +237,6 @@ namespace Sensor_de_Gas_IoT {
             this.btnNotificarCelular.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
             this.btnNotificarCelular.UseVisualStyleBackColor = true;
             this.btnNotificarCelular.Click += new System.EventHandler(this.btnNotificarCelular_Click);
-            // 
-            // btnEncenderAlarmaLocalmente
-            // 
-            this.btnEncenderAlarmaLocalmente.IconChar = FontAwesome.Sharp.IconChar.Fire;
-            this.btnEncenderAlarmaLocalmente.IconColor = System.Drawing.Color.Red;
-            this.btnEncenderAlarmaLocalmente.IconFont = FontAwesome.Sharp.IconFont.Auto;
-            this.btnEncenderAlarmaLocalmente.Location = new System.Drawing.Point(10, 19);
-            this.btnEncenderAlarmaLocalmente.Name = "btnEncenderAlarmaLocalmente";
-            this.btnEncenderAlarmaLocalmente.Size = new System.Drawing.Size(109, 114);
-            this.btnEncenderAlarmaLocalmente.TabIndex = 3;
-            this.btnEncenderAlarmaLocalmente.Text = "Encender Alarma Localmente";
-            this.btnEncenderAlarmaLocalmente.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
-            this.btnEncenderAlarmaLocalmente.UseVisualStyleBackColor = true;
-            this.btnEncenderAlarmaLocalmente.Click += new System.EventHandler(this.btnEncenderAlarmaLocalmente_Click);
             // 
             // btnPanico
             // 
@@ -235,16 +254,6 @@ namespace Sensor_de_Gas_IoT {
             this.btnPanico.UseVisualStyleBackColor = false;
             this.btnPanico.Click += new System.EventHandler(this.btnPanico_Click);
             // 
-            // humo
-            // 
-            this.humo.Image = ((System.Drawing.Image)(resources.GetObject("humo.Image")));
-            this.humo.Location = new System.Drawing.Point(394, 182);
-            this.humo.Name = "humo";
-            this.humo.Size = new System.Drawing.Size(245, 235);
-            this.humo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.humo.TabIndex = 5;
-            this.humo.TabStop = false;
-            // 
             // FormPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -255,17 +264,19 @@ namespace Sensor_de_Gas_IoT {
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormPrincipal";
             this.Text = "Panel de control de gases - Laboratorio TecNLD";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormPrincipal_FormClosed);
             this.Load += new System.EventHandler(this.FormPrincipal_Load);
             this.grbGrafico.ResumeLayout(false);
             this.tabControl1.ResumeLayout(false);
             this.tabMQ2.ResumeLayout(false);
             this.tabMQ2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.humo)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chartSensorMQ2)).EndInit();
             this.tabMQ3.ResumeLayout(false);
             this.tabMQ3.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.estadoMq3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.chartSensorMQ3)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.alcohol)).EndInit();
             this.groupBox1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.humo)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -278,16 +289,16 @@ namespace Sensor_de_Gas_IoT {
         private System.Windows.Forms.TabPage tabMQ2;
         private System.Windows.Forms.TabPage tabMQ3;
         private FontAwesome.Sharp.IconButton btnPanico;
-        private FontAwesome.Sharp.IconButton btnEncenderAlarmaLocalmente;
         private FontAwesome.Sharp.IconButton btnEnciendeAspersores;
         private FontAwesome.Sharp.IconButton btnNotificarCelular;
         private System.Windows.Forms.DataVisualization.Charting.Chart chartSensorMQ2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label lblFugaAlcohol;
         private System.Windows.Forms.RichTextBox logMq2;
-        private System.Windows.Forms.PictureBox estadoMq3;
+        private System.Windows.Forms.PictureBox alcohol;
         private System.Windows.Forms.RichTextBox logMq3;
         private System.Windows.Forms.PictureBox humo;
+        private System.Windows.Forms.DataVisualization.Charting.Chart chartSensorMQ3;
     }
 }
 
