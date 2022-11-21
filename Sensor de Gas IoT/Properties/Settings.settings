@@ -1,7 +1,21 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Sensor_de_Gas_IoT.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="PortName" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">COM3</Value>
+    </Setting>
+    <Setting Name="BaudRate" Type="System.Int32" Scope="Application">
+      <Value Profile="(Default)">9600</Value>
+    </Setting>
+    <Setting Name="TwilioSid" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">ACc91bb9a68cb30c23515025aca278e793</Value>
+    </Setting>
+    <Setting Name="TwilioAuthToken" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">41cd6d1cbd536ac7f93f0f0159097a71</Value>
+    </Setting>
+    <Setting Name="TwilioPhone" Type="System.String" Scope="Application">
+      <Value Profile="(Default)">+19498284783</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
