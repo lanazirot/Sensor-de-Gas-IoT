@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Media;
 using System.Windows.Forms;
 using System.IO.Ports;
 using System.IO;
-using System.Threading;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 
@@ -22,6 +17,7 @@ namespace Sensor_de_Gas_IoT {
         private string arduinoData;
         float valorMQ3 = 0.0f, valorMQ2 = 0.0f;
 
+        private bool aspersoresEncendidos = false;
 
         public FormPrincipal() {
             InitializeComponent();
@@ -82,17 +78,12 @@ namespace Sensor_de_Gas_IoT {
 
                 if (float.TryParse(data[1], out valorMQ3)) {
                     if (valorMQ3 > 300) {
-                        if (!alarmaLocalSonando) {
-                            alarmaLocalSonando = true;
-                        }
+                        Console.Beep(800, 800);
                         alcohol.Image = Image.FromFile($"{resources}\\HumoHigh.png");
                     } else if (valorMQ3 > 100 && valorMQ3 <= 300) {
-                        DetenerAlarmaEnMQ3();
                         alcohol.Image = Image.FromFile($"{resources}\\HumoMedium.png");
-                        Console.Beep();
-                        Console.Beep();
+                        Console.Beep(800, 400);
                     } else {
-                        DetenerAlarmaEnMQ3();
                         alcohol.Image = Image.FromFile($"{resources}\\HumoLow.png");
                         Console.Beep();
                     }
@@ -103,6 +94,8 @@ namespace Sensor_de_Gas_IoT {
                     }
                     alcohol.Image = Image.FromFile($"{resources}\\Okay.png");
                 }
+
+                lblMq3.Text = lblMq3.Text.Replace("{0}", valorMQ3.ToString());
 
                 try {
                     if (serialArduino.IsOpen) {
@@ -131,12 +124,10 @@ namespace Sensor_de_Gas_IoT {
                         }
                         humo.Image = Image.FromFile($"{resources}\\HumoHigh.png");
                     } else if (valorMQ2 > 100 && valorMQ2 <= 300) {
-                        DetenerAlarmaEnMQ3();
                         humo.Image = Image.FromFile($"{resources}\\HumoMedium.png");
                         Console.Beep();
                         Console.Beep();
                     } else {
-                        DetenerAlarmaEnMQ3();
                         humo.Image = Image.FromFile($"{resources}\\HumoLow.png");
                         Console.Beep();
                     }
@@ -171,7 +162,7 @@ namespace Sensor_de_Gas_IoT {
             if (MessageBox.Show("¿Está seguro que desea activar el botón de pánico?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                 SonarAlarma();
                 MessageBox.Show("Se ha llamado a emergencias. Los aspersores serán encendidos. Una notificación fue enviada a su celular.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los aspersores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3}. BOTON DE PÁNICO FUE ACTIVADO.");
+                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los aspersores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3} PPM. BOTON DE PÁNICO FUE ACTIVADO.");
             }
         }
 
@@ -219,10 +210,23 @@ namespace Sensor_de_Gas_IoT {
             }
         }
 
+        private void btnEnciendeVentiladores_Click(object sender, EventArgs e) {
+
+            if (!aspersoresEncendidos) {
+                ventilador.Visible = true;
+                btnEnciendeAspersores.Text = "Apagar ventiladores";
+            } else {
+                ventilador.Visible = false;
+                btnEnciendeAspersores.Text = "Encender ventiladores";
+            }            
+            aspersoresEncendidos = !aspersoresEncendidos;
+            
+        }
+
         private void btnNotificarCelular_Click(object sender, EventArgs e) {
             //Prompt user if want to send Mq2 and mq3 values via SMS or just sms an alert
             if (MessageBox.Show("¿Desea enviar un mensaje de alerta o los valores actuales de los sensores?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los aspersores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3}. Se reporta PELIGRO!");
+                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los aspersores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3} PPM. Se reporta PELIGRO!");
             } else {
                 EnviarNotificacionCelular("Se ha activado el botón de pánico. Los aspersores serán encendidos.");
             }
