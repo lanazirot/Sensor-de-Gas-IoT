@@ -63,40 +63,38 @@ namespace Sensor_de_Gas_IoT {
 
         }
 
-        private void DetenerAlarmaEnMQ3() {
-            if (alarmaLocalSonando) {
-                player.Stop();
-                alarmaLocalSonando = false;
-            }
-        }
-
         private void ProcesarDatosMQ3(object sender, EventArgs e) {
             logMq3.AppendText(arduinoData);
             try {
                 //Check if arduinoData is a float: if true, compare its value to 300
                 string[] data = arduinoData.Split(':');
-
                 if (float.TryParse(data[1], out valorMQ3)) {
+                    lblMq3.Text = $"MQ3: {valorMQ3} PPM";
                     if (valorMQ3 > 300) {
-                        Console.Beep(800, 800);
+                        //Play Alarma.wav from /Resources folder
+                        if (!alarmaLocalSonando) {
+                            player.PlayLooping();
+                            alarmaLocalSonando = true;
+                        }
+                        if (!aspersoresEncendidos) {
+                            ventilador.Visible = true;
+                            aspersoresEncendidos = true;
+                            btnEnciendeAspersores.Text = "Apagar ventiladores";
+                        }
                         alcohol.Image = Image.FromFile($"{resources}\\HumoHigh.png");
                     } else if (valorMQ3 > 100 && valorMQ3 <= 300) {
                         alcohol.Image = Image.FromFile($"{resources}\\HumoMedium.png");
-                        Console.Beep(800, 400);
+                        player.Stop();
+                        alarmaLocalSonando = false;
                     } else {
                         alcohol.Image = Image.FromFile($"{resources}\\HumoLow.png");
-                        Console.Beep();
-                    }
-                } else {
-                    if (alarmaLocalSonando) {
                         player.Stop();
                         alarmaLocalSonando = false;
                     }
+                
+                } else {
                     alcohol.Image = Image.FromFile($"{resources}\\Okay.png");
                 }
-
-                lblMq3.Text = lblMq3.Text.Replace("{0}", valorMQ3.ToString());
-
                 try {
                     if (serialArduino.IsOpen) {
                         chartSensorMQ3.Invoke((MethodInvoker)(() => {
@@ -118,27 +116,26 @@ namespace Sensor_de_Gas_IoT {
             try {
                 string[] data = arduinoData.Split(':');
                 if (float.TryParse(data[1], out valorMQ2)) {
+                    lblMq2.Text = $"MQ2: {valorMQ2} PPM";
                     if (valorMQ2 > 300) {
                         if (!alarmaLocalSonando) {
+                            player.PlayLooping();
                             alarmaLocalSonando = true;
+                        }
+                        if (!aspersoresEncendidos) {
+                            ventilador.Visible = true;
+                            btnEnciendeAspersores.Text = "Apagar ventiladores";
+                            aspersoresEncendidos = true;
                         }
                         humo.Image = Image.FromFile($"{resources}\\HumoHigh.png");
                     } else if (valorMQ2 > 100 && valorMQ2 <= 300) {
                         humo.Image = Image.FromFile($"{resources}\\HumoMedium.png");
-                        Console.Beep();
-                        Console.Beep();
                     } else {
                         humo.Image = Image.FromFile($"{resources}\\HumoLow.png");
-                        Console.Beep();
                     }
                 } else {
-                    if (alarmaLocalSonando) {
-                        player.Stop();
-                        alarmaLocalSonando = false;
-                    }
                     humo.Image = Image.FromFile($"{resources}\\Okay.png");
                 }
-
                 try {
                     if (serialArduino.IsOpen) {
                         chartSensorMQ2.Invoke((MethodInvoker)(() => {
@@ -151,10 +148,6 @@ namespace Sensor_de_Gas_IoT {
             } catch {
                 Console.Write("[IGNORE]: Error de lectura de arduino");
             }
-        }
-
-        private void btnEncenderAlarmaLocalmente_Click(object sender, EventArgs e) {
-            SonarAlarma();
         }
 
         private void btnPanico_Click(object sender, EventArgs e) {
@@ -221,6 +214,16 @@ namespace Sensor_de_Gas_IoT {
             }            
             aspersoresEncendidos = !aspersoresEncendidos;
             
+        }
+
+        private void logMq2_TextChanged(object sender, EventArgs e) {
+            logMq2.SelectionStart = logMq2.Text.Length;
+            logMq2.ScrollToCaret();
+        }
+
+        private void logMq3_TextChanged(object sender, EventArgs e) {
+            logMq3.SelectionStart = logMq3.Text.Length;
+            logMq3.ScrollToCaret();
         }
 
         private void btnNotificarCelular_Click(object sender, EventArgs e) {

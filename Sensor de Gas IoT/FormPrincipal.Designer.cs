@@ -114,6 +114,7 @@ namespace Sensor_de_Gas_IoT {
             this.logMq2.Size = new System.Drawing.Size(246, 123);
             this.logMq2.TabIndex = 4;
             this.logMq2.Text = "";
+            this.logMq2.TextChanged += new System.EventHandler(this.logMq2_TextChanged);
             // 
             // label1
             // 
@@ -179,7 +180,7 @@ namespace Sensor_de_Gas_IoT {
             this.alcohol.Image = ((System.Drawing.Image)(resources.GetObject("alcohol.Image")));
             this.alcohol.Location = new System.Drawing.Point(394, 186);
             this.alcohol.Name = "alcohol";
-            this.alcohol.Size = new System.Drawing.Size(250, 232);
+            this.alcohol.Size = new System.Drawing.Size(240, 232);
             this.alcohol.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.alcohol.TabIndex = 6;
             this.alcohol.TabStop = false;
@@ -189,9 +190,10 @@ namespace Sensor_de_Gas_IoT {
             this.logMq3.Location = new System.Drawing.Point(394, 53);
             this.logMq3.Name = "logMq3";
             this.logMq3.ReadOnly = true;
-            this.logMq3.Size = new System.Drawing.Size(250, 127);
+            this.logMq3.Size = new System.Drawing.Size(240, 127);
             this.logMq3.TabIndex = 5;
             this.logMq3.Text = "";
+            this.logMq3.TextChanged += new System.EventHandler(this.logMq3_TextChanged);
             // 
             // lblFugaAlcohol
             // 
@@ -232,20 +234,22 @@ namespace Sensor_de_Gas_IoT {
             // lblMq3
             // 
             this.lblMq3.AutoSize = true;
-            this.lblMq3.Location = new System.Drawing.Point(222, 110);
+            this.lblMq3.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMq3.Location = new System.Drawing.Point(195, 108);
             this.lblMq3.Name = "lblMq3";
-            this.lblMq3.Size = new System.Drawing.Size(76, 13);
+            this.lblMq3.Size = new System.Drawing.Size(116, 24);
             this.lblMq3.TabIndex = 9;
-            this.lblMq3.Text = "MQ3: {0} PPM";
+            this.lblMq3.Text = "MQ3: 0 PPM";
             // 
             // lblMq2
             // 
             this.lblMq2.AutoSize = true;
-            this.lblMq2.Location = new System.Drawing.Point(222, 31);
+            this.lblMq2.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblMq2.Location = new System.Drawing.Point(195, 22);
             this.lblMq2.Name = "lblMq2";
-            this.lblMq2.Size = new System.Drawing.Size(76, 13);
+            this.lblMq2.Size = new System.Drawing.Size(116, 24);
             this.lblMq2.TabIndex = 8;
-            this.lblMq2.Text = "MQ2: {0} PPM";
+            this.lblMq2.Text = "MQ2: 0 PPM";
             // 
             // btnEnciendeAspersores
             // 
@@ -277,10 +281,10 @@ namespace Sensor_de_Gas_IoT {
             // 
             // btnPanico
             // 
-            this.btnPanico.BackColor = System.Drawing.Color.Red;
+            this.btnPanico.BackColor = System.Drawing.Color.Transparent;
             this.btnPanico.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPanico.IconChar = FontAwesome.Sharp.IconChar.Warning;
-            this.btnPanico.IconColor = System.Drawing.Color.Yellow;
+            this.btnPanico.IconColor = System.Drawing.Color.Red;
             this.btnPanico.IconFont = FontAwesome.Sharp.IconFont.Auto;
             this.btnPanico.Location = new System.Drawing.Point(485, 19);
             this.btnPanico.Name = "btnPanico";
@@ -298,8 +302,11 @@ namespace Sensor_de_Gas_IoT {
             this.ClientSize = new System.Drawing.Size(696, 644);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grbGrafico);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "FormPrincipal";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Panel de control de gases - Laboratorio TecNLD";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.FormPrincipal_FormClosed);
             this.Load += new System.EventHandler(this.FormPrincipal_Load);

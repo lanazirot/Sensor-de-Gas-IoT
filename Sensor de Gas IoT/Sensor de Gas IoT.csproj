@@ -106,7 +106,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Alarma.wav" />
-    <Content Include="Resources\favicon.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
