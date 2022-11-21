@@ -26,16 +26,22 @@ namespace Sensor_de_Gas_IoT {
         private void InitializeComponent() {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FormPrincipal));
             this.grbGrafico = new System.Windows.Forms.GroupBox();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabMQ2 = new System.Windows.Forms.TabPage();
+            this.tabMQ3 = new System.Windows.Forms.TabPage();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.btnPanico = new System.Windows.Forms.Button();
-            this.btnEncenderAlarma = new System.Windows.Forms.Button();
-            this.btnNotificacionIoT = new System.Windows.Forms.Button();
-            this.btnEncenderAspersores = new System.Windows.Forms.Button();
+            this.btnEnciendeAspersores = new FontAwesome.Sharp.IconButton();
+            this.btnNotificarCelular = new FontAwesome.Sharp.IconButton();
+            this.btnEncenderAlarmaLocalmente = new FontAwesome.Sharp.IconButton();
+            this.btnPanico = new FontAwesome.Sharp.IconButton();
+            this.grbGrafico.SuspendLayout();
+            this.tabControl1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
             // 
             // grbGrafico
             // 
+            this.grbGrafico.Controls.Add(this.tabControl1);
             this.grbGrafico.Location = new System.Drawing.Point(12, 12);
             this.grbGrafico.Name = "grbGrafico";
             this.grbGrafico.Size = new System.Drawing.Size(670, 475);
@@ -43,72 +49,117 @@ namespace Sensor_de_Gas_IoT {
             this.grbGrafico.TabStop = false;
             this.grbGrafico.Text = "Visor general";
             // 
+            // tabControl1
+            // 
+            this.tabControl1.Controls.Add(this.tabMQ2);
+            this.tabControl1.Controls.Add(this.tabMQ3);
+            this.tabControl1.Location = new System.Drawing.Point(6, 19);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.tabControl1.Size = new System.Drawing.Size(658, 450);
+            this.tabControl1.TabIndex = 0;
+            // 
+            // tabMQ2
+            // 
+            this.tabMQ2.Location = new System.Drawing.Point(4, 22);
+            this.tabMQ2.Name = "tabMQ2";
+            this.tabMQ2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMQ2.Size = new System.Drawing.Size(650, 424);
+            this.tabMQ2.TabIndex = 0;
+            this.tabMQ2.Text = "Sensor MQ2";
+            this.tabMQ2.UseVisualStyleBackColor = true;
+            // 
+            // tabMQ3
+            // 
+            this.tabMQ3.Location = new System.Drawing.Point(4, 22);
+            this.tabMQ3.Name = "tabMQ3";
+            this.tabMQ3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabMQ3.Size = new System.Drawing.Size(650, 424);
+            this.tabMQ3.TabIndex = 1;
+            this.tabMQ3.Text = "Sensor MQ3";
+            this.tabMQ3.UseVisualStyleBackColor = true;
+            // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.btnEncenderAspersores);
-            this.groupBox1.Controls.Add(this.btnNotificacionIoT);
-            this.groupBox1.Controls.Add(this.btnEncenderAlarma);
+            this.groupBox1.Controls.Add(this.btnEnciendeAspersores);
+            this.groupBox1.Controls.Add(this.btnNotificarCelular);
+            this.groupBox1.Controls.Add(this.btnEncenderAlarmaLocalmente);
+            this.groupBox1.Controls.Add(this.btnPanico);
             this.groupBox1.Location = new System.Drawing.Point(12, 493);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(670, 201);
+            this.groupBox1.Size = new System.Drawing.Size(670, 139);
             this.groupBox1.TabIndex = 1;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Controles generales";
             // 
+            // btnEnciendeAspersores
+            // 
+            this.btnEnciendeAspersores.IconChar = FontAwesome.Sharp.IconChar.Water;
+            this.btnEnciendeAspersores.IconColor = System.Drawing.Color.Cyan;
+            this.btnEnciendeAspersores.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.btnEnciendeAspersores.Location = new System.Drawing.Point(235, 19);
+            this.btnEnciendeAspersores.Name = "btnEnciendeAspersores";
+            this.btnEnciendeAspersores.Size = new System.Drawing.Size(115, 114);
+            this.btnEnciendeAspersores.TabIndex = 5;
+            this.btnEnciendeAspersores.Text = "Encender Aspersores";
+            this.btnEnciendeAspersores.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
+            this.btnEnciendeAspersores.UseVisualStyleBackColor = true;
+            // 
+            // btnNotificarCelular
+            // 
+            this.btnNotificarCelular.IconChar = FontAwesome.Sharp.IconChar.TabletAndroid;
+            this.btnNotificarCelular.IconColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.btnNotificarCelular.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.btnNotificarCelular.Location = new System.Drawing.Point(125, 19);
+            this.btnNotificarCelular.Name = "btnNotificarCelular";
+            this.btnNotificarCelular.Size = new System.Drawing.Size(104, 114);
+            this.btnNotificarCelular.TabIndex = 4;
+            this.btnNotificarCelular.Text = "Notificación Móvil";
+            this.btnNotificarCelular.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
+            this.btnNotificarCelular.UseVisualStyleBackColor = true;
+            // 
+            // btnEncenderAlarmaLocalmente
+            // 
+            this.btnEncenderAlarmaLocalmente.IconChar = FontAwesome.Sharp.IconChar.Fire;
+            this.btnEncenderAlarmaLocalmente.IconColor = System.Drawing.Color.Red;
+            this.btnEncenderAlarmaLocalmente.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.btnEncenderAlarmaLocalmente.Location = new System.Drawing.Point(10, 19);
+            this.btnEncenderAlarmaLocalmente.Name = "btnEncenderAlarmaLocalmente";
+            this.btnEncenderAlarmaLocalmente.Size = new System.Drawing.Size(109, 114);
+            this.btnEncenderAlarmaLocalmente.TabIndex = 3;
+            this.btnEncenderAlarmaLocalmente.Text = "Encender Alarma Localmente";
+            this.btnEncenderAlarmaLocalmente.TextImageRelation = System.Windows.Forms.TextImageRelation.TextAboveImage;
+            this.btnEncenderAlarmaLocalmente.UseVisualStyleBackColor = true;
+            this.btnEncenderAlarmaLocalmente.Click += new System.EventHandler(this.btnEncenderAlarmaLocalmente_Click);
+            // 
             // btnPanico
             // 
             this.btnPanico.BackColor = System.Drawing.Color.Red;
-            this.btnPanico.Font = new System.Drawing.Font("Microsoft Sans Serif", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnPanico.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.btnPanico.Location = new System.Drawing.Point(12, 700);
+            this.btnPanico.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnPanico.IconChar = FontAwesome.Sharp.IconChar.Warning;
+            this.btnPanico.IconColor = System.Drawing.Color.Yellow;
+            this.btnPanico.IconFont = FontAwesome.Sharp.IconFont.Auto;
+            this.btnPanico.Location = new System.Drawing.Point(485, 19);
             this.btnPanico.Name = "btnPanico";
-            this.btnPanico.Size = new System.Drawing.Size(670, 44);
+            this.btnPanico.Size = new System.Drawing.Size(175, 114);
             this.btnPanico.TabIndex = 2;
-            this.btnPanico.Text = "PANICO";
+            this.btnPanico.Text = "PÁNICO";
+            this.btnPanico.TextImageRelation = System.Windows.Forms.TextImageRelation.ImageBeforeText;
             this.btnPanico.UseVisualStyleBackColor = false;
-            this.btnPanico.Click += new System.EventHandler(this.btnPanico_Click);
-            // 
-            // btnEncenderAlarma
-            // 
-            this.btnEncenderAlarma.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEncenderAlarma.Location = new System.Drawing.Point(6, 19);
-            this.btnEncenderAlarma.Name = "btnEncenderAlarma";
-            this.btnEncenderAlarma.Size = new System.Drawing.Size(250, 176);
-            this.btnEncenderAlarma.TabIndex = 0;
-            this.btnEncenderAlarma.Text = "Encender alarma local";
-            this.btnEncenderAlarma.UseVisualStyleBackColor = true;
-            // 
-            // btnNotificacionIoT
-            // 
-            this.btnNotificacionIoT.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnNotificacionIoT.Location = new System.Drawing.Point(262, 19);
-            this.btnNotificacionIoT.Name = "btnNotificacionIoT";
-            this.btnNotificacionIoT.Size = new System.Drawing.Size(145, 176);
-            this.btnNotificacionIoT.TabIndex = 1;
-            this.btnNotificacionIoT.Text = "Notificación celular (manual)";
-            this.btnNotificacionIoT.UseVisualStyleBackColor = true;
-            // 
-            // btnEncenderAspersores
-            // 
-            this.btnEncenderAspersores.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnEncenderAspersores.Location = new System.Drawing.Point(413, 19);
-            this.btnEncenderAspersores.Name = "btnEncenderAspersores";
-            this.btnEncenderAspersores.Size = new System.Drawing.Size(251, 176);
-            this.btnEncenderAspersores.TabIndex = 2;
-            this.btnEncenderAspersores.Text = "Encender aspersores de agua";
-            this.btnEncenderAspersores.UseVisualStyleBackColor = true;
             // 
             // FormPrincipal
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(696, 756);
-            this.Controls.Add(this.btnPanico);
+            this.ClientSize = new System.Drawing.Size(696, 644);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.grbGrafico);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "FormPrincipal";
             this.Text = "Panel de control de gases - Laboratorio TecNLD";
+            this.Load += new System.EventHandler(this.FormPrincipal_Load);
+            this.grbGrafico.ResumeLayout(false);
+            this.tabControl1.ResumeLayout(false);
             this.groupBox1.ResumeLayout(false);
             this.ResumeLayout(false);
 
@@ -118,10 +169,13 @@ namespace Sensor_de_Gas_IoT {
 
         private System.Windows.Forms.GroupBox grbGrafico;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Button btnPanico;
-        private System.Windows.Forms.Button btnEncenderAspersores;
-        private System.Windows.Forms.Button btnNotificacionIoT;
-        private System.Windows.Forms.Button btnEncenderAlarma;
+        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabPage tabMQ2;
+        private System.Windows.Forms.TabPage tabMQ3;
+        private FontAwesome.Sharp.IconButton btnPanico;
+        private FontAwesome.Sharp.IconButton btnEncenderAlarmaLocalmente;
+        private FontAwesome.Sharp.IconButton btnEnciendeAspersores;
+        private FontAwesome.Sharp.IconButton btnNotificarCelular;
     }
 }
 
