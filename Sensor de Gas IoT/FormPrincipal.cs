@@ -6,6 +6,7 @@ using System.IO.Ports;
 using System.IO;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
+using System.Threading;
 
 namespace Sensor_de_Gas_IoT {
     public partial class FormPrincipal : Form {
@@ -16,8 +17,8 @@ namespace Sensor_de_Gas_IoT {
         private bool alarmaLocalSonando = false;
         private string arduinoData;
         float valorMQ3 = 0.0f, valorMQ2 = 0.0f;
-
-        private bool aspersoresEncendidos = false;
+        private bool ventiladoresEncendidos = false;
+        private bool notificacionEnviada = false;
 
         public FormPrincipal() {
             InitializeComponent();
@@ -42,6 +43,8 @@ namespace Sensor_de_Gas_IoT {
                 serialArduino.Open();
             } catch (Exception ex) {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //Cerrar el form
+                Close();
             }
 
             chartSensorMQ3.ChartAreas[0].AxisX.Title = "Fecha";
@@ -64,9 +67,9 @@ namespace Sensor_de_Gas_IoT {
         }
 
         private void ProcesarDatosMQ3(object sender, EventArgs e) {
-            logMq3.AppendText(arduinoData);
+            DateTime now = DateTime.Now;
+            logMq3.AppendText($"{now}->{arduinoData}");
             try {
-                //Check if arduinoData is a float: if true, compare its value to 300
                 string[] data = arduinoData.Split(':');
                 if (float.TryParse(data[1], out valorMQ3)) {
                     lblMq3.Text = $"MQ3: {valorMQ3} PPM";
@@ -76,24 +79,44 @@ namespace Sensor_de_Gas_IoT {
                             player.PlayLooping();
                             alarmaLocalSonando = true;
                         }
-                        if (!aspersoresEncendidos) {
+                        if (!ventiladoresEncendidos) {
                             ventilador.Visible = true;
-                            aspersoresEncendidos = true;
+                            ventiladoresEncendidos = true;
                             btnEnciendeAspersores.Text = "Apagar ventiladores";
+                            //Enciende ventiladores en el Arduino
+                            serialArduino.Write("1");
                         }
-                        alcohol.Image = Image.FromFile($"{resources}\\HumoHigh.png");
+                        alcohol.Image = Image.FromFile($"{resources}\\WearMask.png");
+                        // Enviar notificación al celular, de forma asincrona para no bloquear el hilo principal
+                        // Si no se ha enviado la notificacion
+                       /* if (!notificacionEnviada) {
+                            notificacionEnviada = true;
+                            hiloNotificacion = new Thread(()=> {
+                                EnviarNotificacionCelular("Se detectó un alto nivel de alcoholes en el aire");
+                            });
+                            hiloNotificacion.Start();
+                        }*/
+
+
+
                     } else if (valorMQ3 > 100 && valorMQ3 <= 300) {
                         alcohol.Image = Image.FromFile($"{resources}\\HumoMedium.png");
                         player.Stop();
                         alarmaLocalSonando = false;
+                        notificacionEnviada = false;
                     } else {
                         alcohol.Image = Image.FromFile($"{resources}\\HumoLow.png");
                         player.Stop();
                         alarmaLocalSonando = false;
+                        notificacionEnviada = false;
                     }
                 
                 } else {
+                    lblMq3.Text = $"MQ3: 0 PPM";
+                    notificacionEnviada = false;
                     alcohol.Image = Image.FromFile($"{resources}\\Okay.png");
+                    player.Stop();
+
                 }
                 try {
                     if (serialArduino.IsOpen) {
@@ -111,8 +134,8 @@ namespace Sensor_de_Gas_IoT {
         }
 
         private void ProcesarDatosMQ2(object sender, EventArgs e) {
-            logMq2.AppendText(arduinoData);
-            //Check if arduinoData is a float: if true, compare its value to 300
+            DateTime now = DateTime.Now;
+            logMq2.AppendText($"{now}->{arduinoData}");
             try {
                 string[] data = arduinoData.Split(':');
                 if (float.TryParse(data[1], out valorMQ2)) {
@@ -122,10 +145,12 @@ namespace Sensor_de_Gas_IoT {
                             player.PlayLooping();
                             alarmaLocalSonando = true;
                         }
-                        if (!aspersoresEncendidos) {
+                        if (!ventiladoresEncendidos) {
                             ventilador.Visible = true;
                             btnEnciendeAspersores.Text = "Apagar ventiladores";
-                            aspersoresEncendidos = true;
+                            ventiladoresEncendidos = true;
+                            //Enciende ventiladores en el Arduino
+                            serialArduino.Write("1");
                         }
                         humo.Image = Image.FromFile($"{resources}\\HumoHigh.png");
                     } else if (valorMQ2 > 100 && valorMQ2 <= 300) {
@@ -134,6 +159,7 @@ namespace Sensor_de_Gas_IoT {
                         humo.Image = Image.FromFile($"{resources}\\HumoLow.png");
                     }
                 } else {
+                    lblMq2.Text = $"MQ2: 0 PPM";
                     humo.Image = Image.FromFile($"{resources}\\Okay.png");
                 }
                 try {
@@ -151,7 +177,6 @@ namespace Sensor_de_Gas_IoT {
         }
 
         private void btnPanico_Click(object sender, EventArgs e) {
-            // Prompt a message to confirm, if user confirms, send a message to the Arduino to turn on the buzzer
             if (MessageBox.Show("¿Está seguro que desea activar el botón de pánico?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                 SonarAlarma();
                 MessageBox.Show("Se ha llamado a emergencias. Los aspersores serán encendidos. Una notificación fue enviada a su celular.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -187,7 +212,6 @@ namespace Sensor_de_Gas_IoT {
                 from: new Twilio.Types.PhoneNumber(Properties.Settings.Default.TwilioPhone),
                 to: new Twilio.Types.PhoneNumber(Properties.Settings.Default.TwilioTo)
             );
-            //Check if message was sent
             if (message.Sid != null) {
                 MessageBox.Show("Se ha enviado una notificación a su celular.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
             } else {
@@ -204,16 +228,19 @@ namespace Sensor_de_Gas_IoT {
         }
 
         private void btnEnciendeVentiladores_Click(object sender, EventArgs e) {
-
-            if (!aspersoresEncendidos) {
+            if (!ventiladoresEncendidos) {
                 ventilador.Visible = true;
                 btnEnciendeAspersores.Text = "Apagar ventiladores";
+                //Encender ventiladores en el arduino
+                serialArduino.Write("1");
+                ventiladoresEncendidos = true;
             } else {
                 ventilador.Visible = false;
                 btnEnciendeAspersores.Text = "Encender ventiladores";
-            }            
-            aspersoresEncendidos = !aspersoresEncendidos;
-            
+                //Apagar ventiladores en el arduino
+                serialArduino.Write("0");
+                ventiladoresEncendidos = false;
+            }
         }
 
         private void logMq2_TextChanged(object sender, EventArgs e) {
