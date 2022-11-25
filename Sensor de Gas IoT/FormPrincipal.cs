@@ -6,7 +6,6 @@ using System.IO.Ports;
 using System.IO;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
-using System.Threading;
 
 namespace Sensor_de_Gas_IoT {
     public partial class FormPrincipal : Form {
@@ -87,8 +86,7 @@ namespace Sensor_de_Gas_IoT {
                             serialArduino.Write("1");
                         }
                         alcohol.Image = Image.FromFile($"{resources}\\WearMask.png");
-                        // Enviar notificación al celular, de forma asincrona para no bloquear el hilo principal
-                        // Si no se ha enviado la notificacion
+
                        /* if (!notificacionEnviada) {
                             notificacionEnviada = true;
                             hiloNotificacion = new Thread(()=> {
@@ -176,11 +174,21 @@ namespace Sensor_de_Gas_IoT {
             }
         }
 
+
         private void btnPanico_Click(object sender, EventArgs e) {
             if (MessageBox.Show("¿Está seguro que desea activar el botón de pánico?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
                 SonarAlarma();
-                MessageBox.Show("Se ha llamado a emergencias. Los aspersores serán encendidos. Una notificación fue enviada a su celular.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los aspersores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3} PPM. BOTON DE PÁNICO FUE ACTIVADO.");
+                MessageBox.Show("Se ha llamado a emergencias. Los ventiladores serán encendidos. Una notificación fue enviada a su celular.", "Confirmación",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los ventiladores serán encendidos. " +
+                    $"Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3} PPM. BOTON DE PÁNICO FUE ACTIVADO.");
+                if (!ventiladoresEncendidos) {
+                    ventilador.Visible = true;
+                    btnEnciendeAspersores.Text = "Apagar ventiladores";
+                    ventiladoresEncendidos = true;
+                    //Enciende ventiladores en el Arduino
+                    serialArduino.Write("1");
+                }
             }
         }
 
@@ -206,16 +214,20 @@ namespace Sensor_de_Gas_IoT {
         private void EnviarNotificacionCelular(string mensaje = "PELIGRO") {
             string accountSid = Properties.Settings.Default.TwilioSid;
             string authToken = Properties.Settings.Default.TwilioAuthToken;
-            TwilioClient.Init(accountSid, authToken);
-            var message = MessageResource.Create(
-                body: mensaje,
-                from: new Twilio.Types.PhoneNumber(Properties.Settings.Default.TwilioPhone),
-                to: new Twilio.Types.PhoneNumber(Properties.Settings.Default.TwilioTo)
-            );
-            if (message.Sid != null) {
-                MessageBox.Show("Se ha enviado una notificación a su celular.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            } else {
-                MessageBox.Show("No se pudo enviar la notificación a su celular.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            try {
+                TwilioClient.Init(accountSid, authToken);
+                var message = MessageResource.Create(
+                    body: mensaje,
+                    from: new Twilio.Types.PhoneNumber(Properties.Settings.Default.TwilioPhone),
+                    to: new Twilio.Types.PhoneNumber(Properties.Settings.Default.TwilioTo)
+                );
+                if (message.Sid != null) {
+                    MessageBox.Show("Se ha enviado una notificación a su celular.", "Confirmación", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                } else {
+                    MessageBox.Show("No se pudo enviar la notificación a su celular.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }                
+            }catch(Exception ex) {
+                MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -254,11 +266,10 @@ namespace Sensor_de_Gas_IoT {
         }
 
         private void btnNotificarCelular_Click(object sender, EventArgs e) {
-            //Prompt user if want to send Mq2 and mq3 values via SMS or just sms an alert
             if (MessageBox.Show("¿Desea enviar un mensaje de alerta o los valores actuales de los sensores?", "Confirmación", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes) {
-                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los aspersores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3} PPM. Se reporta PELIGRO!");
+                EnviarNotificacionCelular($"Se ha activado el botón de pánico. Los ventiladores serán encendidos. Ultimos valores del sensor MQ2: {valorMQ2} PPM | Ultimos valores del sensor MQ3: {valorMQ3} PPM. Se reporta PELIGRO!");
             } else {
-                EnviarNotificacionCelular("Se ha activado el botón de pánico. Los aspersores serán encendidos.");
+                EnviarNotificacionCelular("Se ha activado el botón de pánico. Los ventiladores serán encendidos.");
             }
         }
 
