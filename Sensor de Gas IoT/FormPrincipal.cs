@@ -233,6 +233,7 @@ namespace Sensor_de_Gas_IoT {
 
         private void FormPrincipal_FormClosed(object sender, FormClosedEventArgs e) {
             try {
+                serialArduino.Write("0");
                 serialArduino.Close();
             } catch {
                 Console.WriteLine("[IGNORE]: Error al cerrar el puerto serial");
