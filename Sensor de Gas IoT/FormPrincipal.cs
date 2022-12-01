@@ -40,7 +40,7 @@ namespace Sensor_de_Gas_IoT {
             //Open the port
             try {
                 serialArduino.Open();
-            } catch (Exception ex) {
+            } catch(Exception ex) {
                 MessageBox.Show(ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 //Cerrar el form
                 Close();
